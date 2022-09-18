@@ -198,128 +198,131 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 	int n;
-	cout << "Задание 1. Прямые методы решения линейных систем\n"
-		<< "Введите размерность матрицы (А):\n"
-		<< "n=";
-	cin >> n;
-	vector<vector<double>> matrix_A(n, vector<double>(n)),
-		L(n, vector<double>(n)),
-		U(n, vector<double>(n)),
-		matrix_LU(n, vector<double>(n)),
-		reverse_A(n, vector<double>(n));
-	vector<double> vector_b(n),
-		solution_Gauss(n),
-		solution_modGauss(n),
-		solution_LU(n),
-		R(n),
-		Ax(n),
-		y(n);
-	//R(n) - вектор невязки
+	char reply = '+';
+	cout << "Задание 1. Прямые методы решения линейных систем\n";
+	while (reply != '-')
+	{
+		cout << "\nВведите размерность матрицы (А):\n"
+			<< "n=";
+		cin >> n;
+		vector<vector<double>> matrix_A(n, vector<double>(n)),
+			L(n, vector<double>(n)),
+			U(n, vector<double>(n)),
+			matrix_LU(n, vector<double>(n)),
+			reverse_A(n, vector<double>(n));
+		vector<double> vector_b(n),
+			solution_Gauss(n),
+			solution_modGauss(n),
+			solution_LU(n),
+			R(n),
+			Ax(n),
+			y(n);
+		//R(n) - вектор невязки
 
-	cout << "\nЗаполняем матрицу (А):\n";
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
+		cout << "\nЗаполняем матрицу (А):\n";
+		for (int i = 0; i < n; i++)
 		{
+			for (int j = 0; j < n; j++)
 			{
-				cout << "[" << i + 1 << "][" << j + 1 << "] = ";
-				cin >> matrix_A[i][j];
+				{
+					cout << "[" << i + 1 << "][" << j + 1 << "] = ";
+					cin >> matrix_A[i][j];
+				}
 			}
 		}
-	}
-	cout << "\nЗаполняем вектор (b):\n";
-	for (int i = 0; i < n; i++)
-	{
-		cout << "b[" << i + 1 << "] = ";
-		cin >> vector_b[i];
-	}
-	cout << "\nРасширенная матрица (А|b):\n";
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-			cout << "\t" << matrix_A[i][j];
-		cout << "\t" << vector_b[i] << endl;
-	}
+		cout << "\nЗаполняем вектор (b):\n";
+		for (int i = 0; i < n; i++)
+		{
+			cout << "b[" << i + 1 << "] = ";
+			cin >> vector_b[i];
+		}
+		cout << "\nРасширенная матрица (А|b):\n";
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < n; j++)
+				cout << "\t" << matrix_A[i][j];
+			cout << "\t" << vector_b[i] << endl;
+		}
 
-	//singleGauss
-	{
-		solution_Gauss = singleGauss(matrix_A, vector_b, n);
-		cout << "\nРешение методом Гаусса единственного деления:\n";
-		for (int i = 0; i < n; i++)
-			cout << "x[" << i + 1 << "] = " << solution_Gauss[i] << "\n";
-		Ax = multiplyMatrixVector(matrix_A, solution_Gauss, n);
-		cout << "Вектор невязки метода Гаусса единственного деления R = ( ";
-		for (int i = 0; i < n; i++)
+		//singleGauss
 		{
-			if (i < n - 1)
+			solution_Gauss = singleGauss(matrix_A, vector_b, n);
+			cout << "\nРешение методом Гаусса единственного деления:\n";
+			for (int i = 0; i < n; i++)
+				cout << "x[" << i + 1 << "] = " << solution_Gauss[i] << "\n";
+			Ax = multiplyMatrixVector(matrix_A, solution_Gauss, n);
+			cout << "Вектор невязки метода Гаусса единственного деления R = ( ";
+			for (int i = 0; i < n; i++)
 			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i] << " ";
+				if (i < n - 1)
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i] << " ";
+				}
+				else
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i];
+				}
 			}
-			else
-			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i];
-			}
+			cout << " )\n";
 		}
-		cout << " )\n";
-	}
-	//modGauss
-	{
-		solution_modGauss = modGauss(matrix_A, vector_b, n);
-		cout << "\nРешение методом Гаусса с выбором главного элемента:\n";
-		for (int i = 0; i < n; i++)
-			cout << "x[" << i + 1 << "] = " << solution_modGauss[i] << "\n";
-		Ax = multiplyMatrixVector(matrix_A, solution_modGauss, n);
-		cout << "Вектор невязки метода Гаусса c выбором главного элемента R = ( ";
-		for (int i = 0; i < n; i++)
+		//modGauss
 		{
-			if (i < n - 1)
+			solution_modGauss = modGauss(matrix_A, vector_b, n);
+			cout << "\nРешение методом Гаусса с выбором главного элемента:\n";
+			for (int i = 0; i < n; i++)
+				cout << "x[" << i + 1 << "] = " << solution_modGauss[i] << "\n";
+			Ax = multiplyMatrixVector(matrix_A, solution_modGauss, n);
+			cout << "Вектор невязки метода Гаусса c выбором главного элемента R = ( ";
+			for (int i = 0; i < n; i++)
 			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i] << " ";
+				if (i < n - 1)
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i] << " ";
+				}
+				else
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i];
+				}
 			}
-			else
-			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i];
-			}
+			cout << " )\n";
 		}
-		cout << " )\n";
-	}
 
-	//LU
-	{
-		LU(matrix_A, L, U, n);
-		cout << "\n\tМатрица U\n";
-		show(U, n);
-		cout << "\n\tМатрица L\n";
-		show(L, n);
-		multiplyMatrixMatrix(L, U, matrix_LU, n);
-		cout << "\n\tL*U matrix" << endl;
-		show(matrix_LU, n);
-		y = singleGauss(L, vector_b, n);
-		solution_LU = singleGauss(U, y, n);
-		cout << "\nРешение методом LU-разложения:\n";
-		for (int i = 0; i < n; i++)
-			cout << "x[" << i + 1 << "] = " << solution_LU[i] << "\n";
-		Ax = multiplyMatrixVector(matrix_A, solution_LU, n);
-		cout << "Вектор невязки метода LU-разложения R = ( ";
-		for (int i = 0; i < n; i++)
+		//LU
 		{
-			if (i < n - 1)
+			LU(matrix_A, L, U, n);
+			cout << "\n\tМатрица U\n";
+			show(U, n);
+			cout << "\n\tМатрица L\n";
+			show(L, n);
+			multiplyMatrixMatrix(L, U, matrix_LU, n);
+			cout << "\n\tL*U matrix" << endl;
+			show(matrix_LU, n);
+			y = singleGauss(L, vector_b, n);
+			solution_LU = singleGauss(U, y, n);
+			cout << "\nРешение методом LU-разложения:\n";
+			for (int i = 0; i < n; i++)
+				cout << "x[" << i + 1 << "] = " << solution_LU[i] << "\n";
+			Ax = multiplyMatrixVector(matrix_A, solution_LU, n);
+			cout << "Вектор невязки метода LU-разложения R = ( ";
+			for (int i = 0; i < n; i++)
 			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i] << " ";
+				if (i < n - 1)
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i] << " ";
+				}
+				else
+				{
+					R[i] = vector_b[i] - Ax[i];
+					cout << R[i];
+				}
 			}
-			else
-			{
-				R[i] = vector_b[i] - Ax[i];
-				cout << R[i];
-			}
+			cout << " )\n";
 		}
-		cout << " )\n";
-	}
 		vector<double>temp_b(n);
 		vector<double>solve(n);
 		for (int i = 0; i < n; i++)
@@ -334,8 +337,12 @@ int main()
 		}
 		cout << "\n\tОбратная матрица А^-1:\n";
 		show(reverse_A, n);
-		
-		cout << "Число обусловленности cond(A) = " << normMatrix(reverse_A, n) * normMatrix(matrix_A, n)<<"\n";
+
+		cout << "Число обусловленности cond(A) = " << normMatrix(reverse_A, n) * normMatrix(matrix_A, n) << "\n";
+		cout << "\nПовторим? [+/-]";
+		cin >> reply;
+	}
 }
+
 
 
