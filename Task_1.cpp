@@ -186,7 +186,7 @@ double normMatrix(vector<vector<double>>& A, int n)
 		double sum = 0;
 		for (int i = 0; i < n; i++)
 		{
-			sum += abs(A[i][j]);
+			sum += fabs(A[i][j]);
 		}
 		sums[j] = sum;
 	}
